@@ -1,0 +1,20 @@
+spring:
+  application:
+    name: agenda
+  datasource:
+    url: jdbc:postgresql://localhost:5432/agenda
+    username: agenda
+    password: agenda
+
+server:
+  port: 8081
+
+jpa:
+  hibernate:
+    ddl-auto: validate
+  properties:
+    hibernate:
+      format_sql: true
+
+flyway:
+  enabled: true

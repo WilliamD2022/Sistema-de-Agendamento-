@@ -1,0 +1,88 @@
+@use '@angular/material' as mat;
+
+$primary: mat.define-palette(mat.$indigo-palette, 500, 300, 700);
+$accent: mat.define-palette(mat.$amber-palette, 500, 300, 700);
+$warn: mat.define-palette(mat.$red-palette);
+
+$theme: mat.define-light-theme((
+  color: (
+    primary: $primary,
+    accent: $accent,
+    warn: $warn
+  ),
+  typography: mat.define-typography-config(
+    $font-family: 'Manrope, system-ui, -apple-system, Segoe UI, sans-serif'
+  )
+));
+
+@include mat.core();
+@include mat.all-component-themes($theme);
+
+:root {
+  --surface: #f7f4ef;
+  --surface-raised: #ffffff;
+  --ink: #1f1f1f;
+  --muted: #6b6b6b;
+  --brand: #1b6f5c;
+  --brand-ink: #0f3f34;
+  --line: rgba(31, 31, 31, 0.08);
+}
+
+* {
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+  font-family: 'Manrope', system-ui, -apple-system, Segoe UI, sans-serif;
+  color: var(--ink);
+  background: radial-gradient(circle at top left, #eef5ff, transparent 45%),
+    radial-gradient(circle at 80% 20%, #f7f0e8, transparent 42%),
+    linear-gradient(180deg, #f6f7fb 0%, #f0f1f5 100%);
+  min-height: 100vh;
+}
+
+.page-shell {
+  padding: 32px 20px 80px;
+}
+
+.container {
+  max-width: 1100px;
+  margin: 0 auto;
+}
+
+.card {
+  background: var(--surface-raised);
+  border-radius: 18px;
+  box-shadow: 0 22px 40px rgba(15, 15, 15, 0.08);
+  border: 1px solid rgba(31, 31, 31, 0.06);
+}
+
+.table-wrap {
+  overflow: hidden;
+  border-radius: 16px;
+  border: 1px solid var(--line);
+}
+
+.mat-mdc-table {
+  background: transparent;
+}
+
+.mat-mdc-row:hover {
+  background: rgba(27, 111, 92, 0.05);
+}
+
+.muted {
+  color: var(--muted);
+}
+
+.pill {
+  display: inline-flex;
+  align-items: center;
+  padding: 4px 10px;
+  border-radius: 999px;
+  background: rgba(27, 111, 92, 0.08);
+  color: var(--brand-ink);
+  font-size: 12px;
+  font-weight: 600;
+}
