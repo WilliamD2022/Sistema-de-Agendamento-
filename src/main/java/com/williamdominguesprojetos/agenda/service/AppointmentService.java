@@ -40,4 +40,9 @@ public class AppointmentService {
 
         return repository.save(appointment);
     }
+
+    @Transactional
+    public void deleteByCustomerId(UUID customerId) {
+        repository.deleteByCustomerId(customerId);
+    }
 }

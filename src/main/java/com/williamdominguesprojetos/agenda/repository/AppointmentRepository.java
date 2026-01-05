@@ -8,4 +8,5 @@ import java.util.UUID;
 
 public interface AppointmentRepository extends JpaRepository<Appointment, UUID> {
     Optional<Appointment> findTopByCustomerIdOrderByStartsAtDesc(UUID customerId);
+    void deleteByCustomerId(UUID customerId);
 }

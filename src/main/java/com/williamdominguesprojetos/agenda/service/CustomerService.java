@@ -73,6 +73,7 @@ public class CustomerService {
         if (!repository.existsById(id)) {
             throw new NotFoundException("Customer not found: " + id);
         }
+        appointmentService.deleteByCustomerId(id);
         repository.deleteById(id);
     }
 

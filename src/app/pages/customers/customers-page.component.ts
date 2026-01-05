@@ -324,6 +324,7 @@ interface CustomerDialogData {
           <mat-label>Data e hora</mat-label>
           <input matInput type="text" formControlName="appointmentStartsAt" placeholder="dd/MM/yyyy HH:mm" />
           <mat-error *ngIf="form.get('appointmentStartsAt')?.hasError('required')">Informe data e hora</mat-error>
+          <mat-error *ngIf="form.get('appointmentStartsAt')?.hasError('invalidFormat')">Formato invalido</mat-error>
         </mat-form-field>
 
         <mat-form-field appearance="outline">
@@ -384,7 +385,7 @@ class CustomerDialogComponent {
         name: data.customer.name,
         phone: data.customer.phone ?? '',
         email: data.customer.email ?? '',
-        appointmentStartsAt: this.toDateTimeLocal(data.customer.appointment?.startsAt),
+        appointmentStartsAt: this.toDisplayDateTime(data.customer.appointment?.startsAt),
         appointmentStatus: data.customer.appointment?.status ?? null,
         appointmentNotes: data.customer.appointment?.notes ?? ''
       });
@@ -403,8 +404,14 @@ class CustomerDialogComponent {
 
     let appointment: AppointmentUpsertRequest | null = null;
     if (appointmentStartsAtRaw) {
+      const normalizedStartsAt = this.normalizeDateTimeLocal(appointmentStartsAtRaw);
+      if (!this.isValidDateTimeLocal(normalizedStartsAt)) {
+        this.form.get('appointmentStartsAt')?.setErrors({ invalidFormat: true });
+        this.form.markAllAsTouched();
+        return;
+      }
       appointment = {
-        startsAt: this.normalizeDateTimeLocal(appointmentStartsAtRaw),
+        startsAt: normalizedStartsAt,
         status: appointmentStatus ?? 'SCHEDULED',
         notes: appointmentNotes || null
       };
@@ -424,13 +431,32 @@ class CustomerDialogComponent {
     this.dialogRef.close(payload);
   }
 
-  private toDateTimeLocal(value?: string | null) {
+  private toDisplayDateTime(value?: string | null) {
     if (!value) return '';
-    return value.length >= 16 ? value.slice(0, 16) : value;
+    const [datePart, timePart] = value.split('T');
+    if (!datePart || !timePart) return value;
+    const [year, month, day] = datePart.split('-');
+    if (!year || !month || !day) return value;
+    const hhmm = timePart.slice(0, 5);
+    return `${day}/${month}/${year} ${hhmm}`;
   }
 
   private normalizeDateTimeLocal(value: string) {
-    return value.length === 16 ? `${value}:00` : value;
+    const trimmed = value.trim();
+    if (!trimmed) return trimmed;
+    if (trimmed.includes('T')) {
+      return trimmed.length === 16 ? `${trimmed}:00` : trimmed;
+    }
+    const match = trimmed.match(
+      /^(\d{2})\/(\d{2})\/(\d{4})\s+(\d{2}):(\d{2})(?::(\d{2}))?$/
+    );
+    if (!match) return trimmed;
+    const [, day, month, year, hours, minutes, seconds] = match;
+    return `${year}-${month}-${day}T${hours}:${minutes}:${seconds ?? '00'}`;
+  }
+
+  private isValidDateTimeLocal(value: string) {
+    return /^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}$/.test(value);
   }
 }
 
