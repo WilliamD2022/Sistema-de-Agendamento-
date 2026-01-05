@@ -105,6 +105,28 @@ Erros (padrao de resposta pode variar conforme configuracao do Spring):
 
 - `404 Not Found` quando o cliente nao existe
 
+Exemplo de erro de validacao (HTTP 400):
+
+```json
+{
+  "status": 400,
+  "error": "Bad Request",
+  "message": "Validation failed",
+  "path": "/customers"
+}
+```
+
+Exemplo de recurso nao encontrado (HTTP 404):
+
+```json
+{
+  "status": 404,
+  "error": "Not Found",
+  "message": "Customer not found",
+  "path": "/customers/00000000-0000-0000-0000-000000000000"
+}
+```
+
 ## Migracoes do banco
 
 As migracoes do Flyway ficam em `src/main/resources/db/migration`.
