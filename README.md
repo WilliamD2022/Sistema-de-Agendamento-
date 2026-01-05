@@ -109,9 +109,10 @@ Exemplo de erro de validacao (HTTP 400):
 
 ```json
 {
+  "timestamp": "2024-12-01T13:45:10Z",
   "status": 400,
   "error": "Bad Request",
-  "message": "Validation failed",
+  "message": "name: must not be blank",
   "path": "/customers"
 }
 ```
@@ -120,6 +121,7 @@ Exemplo de recurso nao encontrado (HTTP 404):
 
 ```json
 {
+  "timestamp": "2024-12-01T13:46:30Z",
   "status": 404,
   "error": "Not Found",
   "message": "Customer not found",
