@@ -2,12 +2,12 @@ spring:
   application:
     name: agenda
   datasource:
-    url: jdbc:postgresql://localhost:5432/agenda
+    url: jdbc:postgresql://localhost:5433/agenda
     username: agenda
     password: agenda
 
 server:
-  port: 8081
+  port: 8082
 
 jpa:
   hibernate:

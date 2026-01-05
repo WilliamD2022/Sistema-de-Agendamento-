@@ -87,6 +87,11 @@ import { Inject } from '@angular/core';
                 </td>
               </ng-container>
 
+              <ng-container matColumnDef="notes">
+                <th mat-header-cell *matHeaderCellDef>Observacoes</th>
+                <td mat-cell *matCellDef="let customer">{{ customer.appointment?.notes || '-' }}</td>
+              </ng-container>
+
               <ng-container matColumnDef="createdAt">
                 <th mat-header-cell *matHeaderCellDef>Criado em</th>
                 <td mat-cell *matCellDef="let customer">{{ customer.createdAt | date: 'dd/MM/yyyy HH:mm' }}</td>
@@ -97,6 +102,14 @@ import { Inject } from '@angular/core';
                 <td mat-cell *matCellDef="let customer">
                   <button mat-icon-button color="primary" (click)="openEdit(customer)">
                     <mat-icon>edit</mat-icon>
+                  </button>
+                  <button
+                    mat-icon-button
+                    color="primary"
+                    (click)="completeAppointment(customer)"
+                    [disabled]="!customer.appointment || customer.appointment.status === 'COMPLETED'"
+                  >
+                    <mat-icon>check_circle</mat-icon>
                   </button>
                   <button mat-icon-button color="warn" (click)="confirmDelete(customer)">
                     <mat-icon>delete</mat-icon>
@@ -182,7 +195,7 @@ export class CustomersPageComponent {
 
   readonly customers = signal<CustomerResponse[]>([]);
   readonly loading = signal(false);
-  readonly displayedColumns = ['name', 'phone', 'email', 'appointment', 'status', 'createdAt', 'actions'];
+  readonly displayedColumns = ['name', 'phone', 'email', 'appointment', 'status', 'notes', 'createdAt', 'actions'];
   readonly statusLabels: Record<AppointmentStatus, string> = {
     SCHEDULED: 'Agendado',
     COMPLETED: 'Concluido',
@@ -260,6 +273,29 @@ export class CustomersPageComponent {
         },
         error: () => this.snackBar.open('Erro ao remover cliente', 'Fechar', { duration: 3000 })
       });
+    });
+  }
+
+  completeAppointment(customer: CustomerResponse) {
+    if (!customer.appointment) return;
+    const appointment: AppointmentUpsertRequest = {
+      startsAt: customer.appointment.startsAt,
+      status: 'COMPLETED',
+      notes: customer.appointment.notes ?? null
+    };
+    const payload: CustomerCreateRequest = {
+      name: customer.name,
+      phone: customer.phone ?? null,
+      email: customer.email ?? null,
+      appointment
+    };
+
+    this.api.update(customer.id, payload).subscribe({
+      next: () => {
+        this.snackBar.open('Agendamento concluido', 'Fechar', { duration: 3000 });
+        this.load();
+      },
+      error: () => this.snackBar.open('Erro ao concluir agendamento', 'Fechar', { duration: 3000 })
     });
   }
 
@@ -345,6 +381,7 @@ interface CustomerDialogData {
       </mat-dialog-content>
 
       <mat-dialog-actions align="end">
+        <button mat-button type="button" (click)="resetForm()">Limpar</button>
         <button mat-button type="button" (click)="dialogRef.close()">Cancelar</button>
         <button mat-flat-button color="primary" type="submit">{{ data.submitLabel }}</button>
       </mat-dialog-actions>
@@ -429,6 +466,17 @@ class CustomerDialogComponent {
     };
 
     this.dialogRef.close(payload);
+  }
+
+  resetForm() {
+    this.form.reset({
+      name: '',
+      phone: '',
+      email: '',
+      appointmentStartsAt: '',
+      appointmentStatus: null,
+      appointmentNotes: ''
+    });
   }
 
   private toDisplayDateTime(value?: string | null) {
