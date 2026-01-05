@@ -1,3 +1,7 @@
+
+
+
+
 create table customers (
                            id uuid primary key,
                            name varchar(120) not null,

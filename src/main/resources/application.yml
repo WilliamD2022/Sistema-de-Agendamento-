@@ -18,3 +18,10 @@ jpa:
 
 flyway:
   enabled: true
+
+app:
+  security:
+    jwt:
+      issuer: "agenda-api"
+      secret: "TROQUE-ESSE-SECRET-POR-UM-BEM-GRANDE-COM-PELO-MENOS-64-CHARS-1234567890"
+      expiration-minutes: 120
