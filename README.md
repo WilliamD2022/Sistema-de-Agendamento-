@@ -51,6 +51,40 @@ Acesse:
 - Frontend: `http://localhost:4200`
 - API (backend): `http://localhost:8081`
 
+## API (endpoints)
+
+Base URL do backend: `http://localhost:8081`
+No frontend, use `/api` que o proxy redireciona para o backend.
+
+Clientes:
+
+- `POST /customers` cria um cliente
+- `GET /customers` lista clientes
+- `GET /customers/{id}` busca cliente por id
+- `PUT /customers/{id}` atualiza cliente
+- `DELETE /customers/{id}` remove cliente
+
+Exemplo de payload (create/update):
+
+```json
+{
+  "name": "Joao da Silva",
+  "phone": "11999990000",
+  "email": "joao@exemplo.com",
+  "appointment": {
+    "startsAt": "2024-12-01T10:00:00",
+    "status": "SCHEDULED",
+    "notes": "Primeira consulta"
+  }
+}
+```
+
+Status de agendamento aceitos:
+
+- `SCHEDULED`
+- `COMPLETED`
+- `NO_SHOW`
+
 ## Migracoes do banco
 
 As migracoes do Flyway ficam em `src/main/resources/db/migration`.
