@@ -85,6 +85,26 @@ Status de agendamento aceitos:
 - `COMPLETED`
 - `NO_SHOW`
 
+## Validacoes e codigos HTTP
+
+Codigos HTTP mais comuns:
+
+- `201 Created` ao criar um cliente
+- `200 OK` em listagem e busca
+- `204 No Content` ao remover um cliente
+
+Validacoes (HTTP `400 Bad Request`):
+
+- `name` obrigatorio, maximo 120 caracteres
+- `phone` maximo 30 caracteres
+- `email` maximo 160 caracteres
+- `appointment.startsAt` obrigatorio
+- `appointment.notes` maximo 500 caracteres
+
+Erros (padrao de resposta pode variar conforme configuracao do Spring):
+
+- `404 Not Found` quando o cliente nao existe
+
 ## Migracoes do banco
 
 As migracoes do Flyway ficam em `src/main/resources/db/migration`.
